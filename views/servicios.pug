@@ -1,0 +1,37 @@
+extends layout/index
+
+block contenido
+    .container.mt-5
+        h2.text-center.mb-5 Nuestros Servicios
+
+        if error
+            .alert.alert-danger.text-center= error
+
+        .row.row-cols-1.row-cols-md-2.row-cols-lg-3.g-4
+            if servicios && servicios.length
+                each servicio in servicios
+                    .col
+                        .card.h-100
+                            .card-img-wrapper
+                                img.card-img-top(
+                                    src=servicio.imagen
+                                    alt=servicio.nombre_servicio
+                                )
+                            .card-body
+                                .text-center.mb-3
+                                    i.fas.fa-3x(class=servicio.icono)
+                                h5.card-title.text-center.mb-3= servicio.nombre_servicio
+                                p.card-text= servicio.descripcion
+                                .d-flex.justify-content-between.align-items-center.mt-3
+                                    span.text-primary.fw-bold= `$${servicio.precio.toLocaleString()}`
+                                    span.text-muted
+                                        i.fas.fa-clock.me-2
+                                        | #{servicio.duracion_minutos} minutos
+                            if usuario && usuario.tipo === 'paciente'
+                                .card-footer.bg-transparent.border-0.p-3
+                                    a.btn.btn-primary.w-100(href="/citas") 
+                                        i.fas.fa-calendar-plus.me-2
+                                        | Agendar Cita
+            else
+                .col-12
+                    .alert.alert-info.text-center No hay servicios disponibles en este momento 

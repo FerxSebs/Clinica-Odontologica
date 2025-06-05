@@ -1,0 +1,34 @@
+.container-fluid.bg-light.py-5
+    .container
+        h2.text-center.mb-5
+            i.fas.fa-quote-left.me-2.text-primary
+            | Experiencias de Nuestros Pacientes
+            i.fas.fa-quote-right.ms-2.text-primary
+        
+        if testimonios && testimonios.length > 0
+            .row.row-cols-1.row-cols-md-2.row-cols-lg-3.g-4
+                each testimonio in testimonios
+                    .col
+                        .card.h-100.shadow-sm.border-0.testimonial-card
+                            .card-body
+                                .testimonial-quote.mb-4
+                                    i.fas.fa-quote-left.text-primary.opacity-25.fa-2x
+                                p.card-text.testimonial-content.mb-4= testimonio.contenido
+                                .d-flex.align-items-center
+                                    .testimonial-avatar.me-3
+                                        i.fas.fa-user-circle.fa-2x.text-primary
+                                    .testimonial-info
+                                        h5.card-title.mb-1= `${testimonio.paciente.nombre} ${testimonio.paciente.apellido}`
+                                        small.text-muted
+                                            i.far.fa-calendar-alt.me-2
+                                            = new Date(testimonio.fecha).toLocaleDateString('es-ES', { 
+                                                year: 'numeric', 
+                                                month: 'long', 
+                                                day: 'numeric' 
+                                            })
+        else
+            .row.justify-content-center
+                .col-md-8
+                    .alert.alert-info.text-center.shadow-sm
+                        i.fas.fa-info-circle.me-2
+                        | Aún no hay testimonios disponibles. ¡Sé el primero en compartir tu experiencia! 

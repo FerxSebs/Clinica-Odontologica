@@ -1,0 +1,58 @@
+extends layout/index
+
+block contenido
+    .container.mt-5
+        h1.text-center.mb-5 Testimoniales
+        
+        if error
+            .alert.alert-danger.text-center= error
+
+        if usuario
+            .row.justify-content-center.mb-5
+                .col-md-8
+                    .card.shadow
+                        .card-body
+                            h3.text-center.mb-4 Deja tu opinión
+                            form(action="/testimoniales" method="POST")
+                                .form-group.mb-3
+                                    label(for="contenido") Tu opinión
+                                    textarea#contenido.form-control(
+                                        name="contenido" 
+                                        rows="4" 
+                                        placeholder="Comparte tu experiencia"
+                                        required
+                                    )= datos ? datos.contenido : ''
+                                .form-group.mb-3
+                                    label(for="puntuacion") Puntuación
+                                    select#puntuacion.form-control(name="puntuacion" required)
+                                        option(value="" disabled selected) Selecciona una puntuación
+                                        - for (let i = 1; i <= 5; i++)
+                                            option(
+                                                value=i 
+                                                selected=datos && datos.puntuacion == i
+                                            ) #{i} #{i === 1 ? 'Estrella' : 'Estrellas'}
+                                .d-grid.gap-2
+                                    input.btn.btn-primary(type="submit" value="Enviar Testimonio")
+        else
+            .alert.alert-info.text-center.mb-5
+                | Para dejar tu opinión, necesitas 
+                a(href="/login") iniciar sesión
+
+        if testimoniales && testimoniales.length
+            .row.row-cols-1.row-cols-md-2.row-cols-lg-3.g-4
+                each testimonial in testimoniales
+                    .col
+                        .card.h-100.shadow
+                            .card-body
+                                .d-flex.justify-content-between.align-items-start.mb-3
+                                    h5.card-title= testimonial.Usuario.nombre
+                                    .stars
+                                        - for (let i = 0; i < testimonial.puntuacion; i++)
+                                            i.fas.fa-star.text-warning
+                                        - for (let i = testimonial.puntuacion; i < 5; i++)
+                                            i.far.fa-star.text-warning
+                                p.card-text= testimonial.contenido
+                            .card-footer.text-muted.text-end
+                                small= new Date(testimonial.createdAt).toLocaleDateString()
+        else
+            .alert.alert-info.text-center No hay testimoniales aún

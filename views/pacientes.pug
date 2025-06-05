@@ -1,0 +1,98 @@
+extends ./layout/index
+
+block contenido
+    .container.mt-5
+        h1.text-center.mb-4 Gestión de Pacientes
+
+        if usuario && (usuario.rol === 'admin' || usuario.rol === 'dentista')
+            .row.mb-4
+                .col-md-12
+                    .card
+                        .card-body
+                            h3.card-title Buscar Paciente
+                            .row
+                                .col-md-8
+                                    input#buscarPaciente.form-control(type="text" placeholder="Buscar por nombre o número de identificación...")
+                                .col-md-4
+                                    button.btn.btn-primary.w-100 Buscar
+
+            .row.mb-4
+                .col-md-12
+                    .card
+                        .card-body
+                            h3.card-title Registrar Nuevo Paciente
+                            form(action="/pacientes/nuevo" method="POST")
+                                .row
+                                    .col-md-6
+                                        .mb-3
+                                            label.form-label(for="nombre") Nombre Completo
+                                            input#nombre.form-control(type="text" name="nombre" required)
+                                        
+                                        .mb-3
+                                            label.form-label(for="identificacion") Número de Identificación
+                                            input#identificacion.form-control(type="text" name="identificacion" required)
+                                        
+                                        .mb-3
+                                            label.form-label(for="fechaNacimiento") Fecha de Nacimiento
+                                            input#fechaNacimiento.form-control(type="date" name="fechaNacimiento" required)
+                                    
+                                    .col-md-6
+                                        .mb-3
+                                            label.form-label(for="telefono") Teléfono
+                                            input#telefono.form-control(type="tel" name="telefono" required)
+                                        
+                                        .mb-3
+                                            label.form-label(for="email") Correo Electrónico
+                                            input#email.form-control(type="email" name="email" required)
+                                        
+                                        .mb-3
+                                            label.form-label(for="direccion") Dirección
+                                            input#direccion.form-control(type="text" name="direccion" required)
+                                
+                                .row
+                                    .col-12
+                                        .mb-3
+                                            label.form-label(for="antecedentes") Antecedentes Médicos
+                                            textarea#antecedentes.form-control(name="antecedentes" rows="3")
+                                
+                                .d-grid.gap-2
+                                    button.btn.btn-primary(type="submit") Registrar Paciente
+
+        if pacientes && pacientes.length
+            .row
+                .col-md-12
+                    .card
+                        .card-body
+                            h3.card-title Lista de Pacientes
+                            .table-responsive
+                                table.table.table-hover
+                                    thead
+                                        tr
+                                            th ID
+                                            th Nombre
+                                            th Teléfono
+                                            th Email
+                                            th Última Cita
+                                            th Acciones
+                                    tbody
+                                        each paciente in pacientes
+                                            tr
+                                                td #{paciente.identificacion}
+                                                td #{paciente.nombre}
+                                                td #{paciente.telefono}
+                                                td #{paciente.email}
+                                                td #{paciente.ultimaCita || 'Sin citas'}
+                                                td
+                                                    .btn-group
+                                                        a.btn.btn-sm.btn-info(href=`/pacientes/${paciente.id}`)
+                                                            i.fas.fa-eye.me-1
+                                                            | Ver
+                                                        a.btn.btn-sm.btn-primary(href=`/pacientes/${paciente.id}/editar`)
+                                                            i.fas.fa-edit.me-1
+                                                            | Editar
+                                                        a.btn.btn-sm.btn-success(href=`/historial/${paciente.id}`)
+                                                            i.fas.fa-file-medical.me-1
+                                                            | Historial
+        else
+            .alert.alert-info
+                p No hay pacientes registrados en el sistema. 

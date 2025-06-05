@@ -1,0 +1,14 @@
+extends layout/index
+
+block contenido
+    .container.mt-5
+        .row.justify-content-center
+            .col-md-8
+                .card.shadow
+                    .card-body.text-center
+                        h1.text-danger.mb-4 Error
+                        if mensaje
+                            p.lead= mensaje
+                        else
+                            p.lead Ha ocurrido un error inesperado
+                        a.btn.btn-primary(href="/") Volver al inicio 

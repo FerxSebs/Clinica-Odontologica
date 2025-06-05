@@ -1,0 +1,65 @@
+extends ./layout/index
+
+block contenido
+    .container.mt-5
+        .row.justify-content-center
+            .col-md-8
+                .card.shadow
+                    .card-body
+                        h2.text-center.mb-4 Registro de Usuario
+                        
+                        if error
+                            .alert.alert-danger.text-center= error
+                        
+                        form(action="/registro" method="POST")
+                            .row
+                                .col-md-6
+                                    .mb-3
+                                        label.form-label(for="nombre") Nombre Completo
+                                        input#nombre.form-control(type="text" name="nombre" required)
+                                    
+                                    .mb-3
+                                        label.form-label(for="email") Correo Electrónico
+                                        input#email.form-control(type="email" name="email" required)
+                                    
+                                    .mb-3
+                                        label.form-label(for="telefono") Teléfono
+                                        input#telefono.form-control(type="tel" name="telefono" required)
+                                
+                                .col-md-6
+                                    .mb-3
+                                        label.form-label(for="password") Contraseña
+                                        input#password.form-control(type="password" name="password" required)
+                                    
+                                    .mb-3
+                                        label.form-label(for="confirmarPassword") Confirmar Contraseña
+                                        input#confirmarPassword.form-control(type="password" name="confirmarPassword" required)
+                                    
+                                    .mb-3
+                                        label.form-label(for="fechaNacimiento") Fecha de Nacimiento
+                                        input#fechaNacimiento.form-control(type="date" name="fechaNacimiento" required)
+                            
+                            .mb-3
+                                label.form-label(for="direccion") Dirección
+                                input#direccion.form-control(type="text" name="direccion" required)
+                            
+                            .mb-3
+                                label.form-label Tipo de Usuario
+                                .form-check
+                                    input#paciente.form-check-input(type="radio" name="tipoUsuario" value="paciente" checked)
+                                    label.form-check-label(for="paciente") Paciente
+                            
+                            .mb-3
+                                .form-check
+                                    input#terminos.form-check-input(type="checkbox" required)
+                                    label.form-check-label(for="terminos")
+                                        | Acepto los 
+                                        a(href="/terminos") términos y condiciones
+                            
+                            .d-grid.gap-2
+                                button.btn.btn-primary(type="submit") Registrarse
+                    
+                    .card-footer.bg-light
+                        p.text-center.mb-0
+                            | ¿Ya tienes cuenta? 
+                            a(href="/login") Inicia sesión aquí 

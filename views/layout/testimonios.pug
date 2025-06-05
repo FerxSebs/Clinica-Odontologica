@@ -1,0 +1,13 @@
+.row.testimonios
+    if testimonios && testimonios.length
+        each testimonio in testimonios
+            .col-md-4.mb-4
+                .card
+                    .card-body
+                        .d-flex.justify-content-between.align-items-start.mb-3
+                            h5.card-title= `${testimonio.Paciente.nombre} ${testimonio.Paciente.apellido}`
+                            small.text-muted= new Date(testimonio.fecha).toLocaleDateString()
+                        p.card-text= testimonio.comentario
+    else
+        .col-12
+            .alert.alert-info.text-center No hay testimonios disponibles 

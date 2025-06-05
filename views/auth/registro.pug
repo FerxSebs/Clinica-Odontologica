@@ -1,0 +1,119 @@
+extends ../layout/index
+
+block contenido
+    .container.mt-5
+        .row.justify-content-center
+            .col-md-8.col-lg-6
+                .card.border-0.shadow-sm
+                    .card-body.p-4
+                        h2.text-center.mb-2
+                            i.fas.fa-user-plus.text-primary.me-2
+                            | Registro de Paciente
+                        
+                        p.text-center.text-muted.mb-4
+                            i.fas.fa-info-circle.me-2
+                            | Complete el formulario para crear su cuenta de paciente
+
+                        if error
+                            .alert.alert-danger.text-center= error
+
+                        form(method="POST" action="/registro" novalidate)
+                            .mb-3
+                                label.form-label(for="numero_identificacion")
+                                    i.fas.fa-id-card.text-primary.me-2
+                                    | Número de Identificación
+                                input#numero_identificacion.form-control(
+                                    type="text" 
+                                    name="numero_identificacion" 
+                                    value=valores ? valores.numero_identificacion : '' 
+                                    required
+                                )
+                            
+                            .row
+                                .col-md-6.mb-3
+                                    label.form-label(for="nombre")
+                                        i.fas.fa-user.text-primary.me-2
+                                        | Nombre
+                                    input#nombre.form-control(
+                                        type="text" 
+                                        name="nombre" 
+                                        value=valores ? valores.nombre : '' 
+                                        required
+                                    )
+                                
+                                .col-md-6.mb-3
+                                    label.form-label(for="apellido")
+                                        i.fas.fa-user.text-primary.me-2
+                                        | Apellido
+                                    input#apellido.form-control(
+                                        type="text" 
+                                        name="apellido" 
+                                        value=valores ? valores.apellido : '' 
+                                        required
+                                    )
+                            
+                            .mb-3
+                                label.form-label(for="email")
+                                    i.fas.fa-envelope.text-primary.me-2
+                                    | Email
+                                input#email.form-control(
+                                    type="email" 
+                                    name="email" 
+                                    value=valores ? valores.email : '' 
+                                    required
+                                )
+                            
+                            .mb-3
+                                label.form-label(for="telefono")
+                                    i.fas.fa-phone.text-primary.me-2
+                                    | Teléfono
+                                input#telefono.form-control(
+                                    type="tel" 
+                                    name="telefono" 
+                                    value=valores ? valores.telefono : '' 
+                                    required
+                                )
+                            
+                            .mb-3
+                                label.form-label(for="password")
+                                    i.fas.fa-lock.text-primary.me-2
+                                    | Contraseña
+                                input#password.form-control(
+                                    type="password" 
+                                    name="password" 
+                                    required
+                                )
+                            
+                            .mb-3
+                                label.form-label(for="fecha_nacimiento")
+                                    i.fas.fa-calendar.text-primary.me-2
+                                    | Fecha de Nacimiento
+                                input#fecha_nacimiento.form-control(
+                                    type="date" 
+                                    name="fecha_nacimiento" 
+                                    value=valores ? valores.fecha_nacimiento : '' 
+                                    required 
+                                    style="cursor: pointer;"
+                                )
+                            
+                            .mb-4
+                                label.form-label(for="direccion")
+                                    i.fas.fa-home.text-primary.me-2
+                                    | Dirección
+                                input#direccion.form-control(
+                                    type="text" 
+                                    name="direccion" 
+                                    value=valores ? valores.direccion : '' 
+                                    required
+                                )
+                            
+                            .d-grid.gap-2.mb-4
+                                button.btn.btn-primary.btn-lg(type="submit")
+                                    i.fas.fa-user-plus.me-2
+                                    | Registrarse como Paciente
+                            
+                            .text-center
+                                p.mb-0 ¿Ya tienes una cuenta?
+                                a.btn.btn-outline-primary.mt-2(href="/login")
+                                    i.fas.fa-sign-in-alt.me-2
+                                    | Iniciar Sesión 

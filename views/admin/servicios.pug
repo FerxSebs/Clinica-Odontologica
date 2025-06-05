@@ -1,0 +1,155 @@
+extends ../layout/admin
+
+block contenido
+    .container.mt-5
+        .d-flex.justify-content-between.align-items-center.mb-4
+            h2 Administración de Servicios
+            button.btn.btn-primary(data-bs-toggle="modal" data-bs-target="#modalCrearServicio")
+                i.fas.fa-plus.me-2
+                | Nuevo Servicio
+
+        if error
+            .alert.alert-danger.text-center= error
+
+        .table-responsive
+            table.table.table-striped
+                thead.table-dark
+                    tr
+                        th ID
+                        th Nombre
+                        th Descripción
+                        th Precio
+                        th Duración
+                        th Acciones
+                tbody
+                    if servicios && servicios.length
+                        each servicio in servicios
+                            tr
+                                td= servicio.servicio_id
+                                td= servicio.nombre_servicio
+                                td= servicio.descripcion
+                                td= `$${servicio.precio}`
+                                td= `${servicio.duracion_minutos} min`
+                                td
+                                    button.btn.btn-sm.btn-warning.me-2(onclick=`editarServicio(${JSON.stringify(servicio)})`)
+                                        i.fas.fa-edit
+                                    button.btn.btn-sm.btn-danger(onclick=`eliminarServicio(${servicio.servicio_id})`)
+                                        i.fas.fa-trash
+                    else
+                        tr
+                            td(colspan="6").text-center No hay servicios registrados
+
+    // Modal Crear Servicio
+    .modal.fade#modalCrearServicio(tabindex="-1")
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    h5.modal-title Crear Nuevo Servicio
+                    button.btn-close(data-bs-dismiss="modal")
+                .modal-body
+                    form(method="POST" action="/admin/servicios")
+                        .mb-3
+                            label.form-label(for="nombre_servicio") Nombre del Servicio
+                            input#nombre_servicio.form-control(
+                                type="text"
+                                name="nombre_servicio"
+                                required
+                            )
+                        .mb-3
+                            label.form-label(for="descripcion") Descripción
+                            textarea#descripcion.form-control(
+                                name="descripcion"
+                                rows="3"
+                                required
+                            )
+                        .mb-3
+                            label.form-label(for="precio") Precio
+                            input#precio.form-control(
+                                type="number"
+                                name="precio"
+                                step="0.01"
+                                required
+                            )
+                        .mb-3
+                            label.form-label(for="duracion_minutos") Duración (minutos)
+                            input#duracion_minutos.form-control(
+                                type="number"
+                                name="duracion_minutos"
+                                required
+                            )
+                        .d-grid.gap-2
+                            button.btn.btn-primary(type="submit") Crear Servicio
+
+    // Modal Editar Servicio
+    .modal.fade#modalEditarServicio(tabindex="-1")
+        .modal-dialog
+            .modal-content
+                .modal-header
+                    h5.modal-title Editar Servicio
+                    button.btn-close(data-bs-dismiss="modal")
+                .modal-body
+                    form#formEditarServicio(method="POST")
+                        .mb-3
+                            label.form-label(for="edit_nombre_servicio") Nombre del Servicio
+                            input#edit_nombre_servicio.form-control(
+                                type="text"
+                                name="nombre_servicio"
+                                required
+                            )
+                        .mb-3
+                            label.form-label(for="edit_descripcion") Descripción
+                            textarea#edit_descripcion.form-control(
+                                name="descripcion"
+                                rows="3"
+                                required
+                            )
+                        .mb-3
+                            label.form-label(for="edit_precio") Precio
+                            input#edit_precio.form-control(
+                                type="number"
+                                name="precio"
+                                step="0.01"
+                                required
+                            )
+                        .mb-3
+                            label.form-label(for="edit_duracion_minutos") Duración (minutos)
+                            input#edit_duracion_minutos.form-control(
+                                type="number"
+                                name="duracion_minutos"
+                                required
+                            )
+                        .d-grid.gap-2
+                            button.btn.btn-primary(type="submit") Guardar Cambios
+
+block scripts
+    script.
+        function editarServicio(servicio) {
+            document.getElementById('edit_nombre_servicio').value = servicio.nombre_servicio;
+            document.getElementById('edit_descripcion').value = servicio.descripcion;
+            document.getElementById('edit_precio').value = servicio.precio;
+            document.getElementById('edit_duracion_minutos').value = servicio.duracion_minutos;
+            
+            const form = document.getElementById('formEditarServicio');
+            form.action = `/admin/servicios/${servicio.servicio_id}?_method=PUT`;
+            
+            new bootstrap.Modal(document.getElementById('modalEditarServicio')).show();
+        }
+
+        async function eliminarServicio(id) {
+            if (confirm('¿Está seguro de que desea eliminar este servicio?')) {
+                try {
+                    const response = await fetch(`/admin/servicios/${id}`, {
+                        method: 'DELETE'
+                    });
+                    
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        alert('Error al eliminar el servicio');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Error al eliminar el servicio');
+                }
+            }
+        } 

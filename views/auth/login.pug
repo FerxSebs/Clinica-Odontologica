@@ -1,0 +1,62 @@
+extends ../layout/index
+
+block contenido
+    .container.mt-5
+        .row.justify-content-center
+            .col-md-8.col-lg-6
+                .card.border-0.shadow-sm
+                    .card-body.p-4
+                        h2.text-center.mb-4 
+                            i.fas.fa-user-circle.text-primary.me-2
+                            | Iniciar Sesión
+
+                        if error
+                            .alert.alert-danger.text-center= error
+
+                        form(method="POST" action="/login" novalidate)
+                            .mb-3
+                                label.form-label(for="email") 
+                                    i.fas.fa-envelope.text-primary.me-2
+                                    | Email
+                                input#email.form-control(
+                                    type="email" 
+                                    name="email" 
+                                    placeholder="tu@email.com" 
+                                    required
+                                )
+                            
+                            .mb-3
+                                label.form-label(for="password")
+                                    i.fas.fa-lock.text-primary.me-2
+                                    | Contraseña
+                                input#password.form-control(
+                                    type="password" 
+                                    name="password" 
+                                    placeholder="Tu Contraseña" 
+                                    required
+                                )
+                            
+                            .d-grid.gap-2.mb-4
+                                button.btn.btn-primary.btn-lg(type="submit")
+                                    i.fas.fa-sign-in-alt.me-2
+                                    | Iniciar Sesión
+                            
+                            .text-center
+                                p.mb-0 ¿Eres paciente y no tienes cuenta? 
+                                a.btn.btn-outline-primary.mt-2(href="/registro")
+                                    i.fas.fa-user-plus.me-2
+                                    | Registrarse como Paciente
+                                
+                        .mt-4
+                            .alert.alert-info.text-center
+                                h5.mb-3 
+                                    i.fas.fa-info-circle.me-2
+                                    | Información de Acceso
+                                p.mb-2
+                                    i.fas.fa-user-injured.me-2
+                                    strong Pacientes: 
+                                    | Pueden registrarse directamente y acceder a citas y testimonios
+                                p.mb-0
+                                    i.fas.fa-user-md.me-2
+                                    strong Personal: 
+                                    | El acceso es proporcionado por el administrador 

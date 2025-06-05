@@ -1,0 +1,41 @@
+header.py-4
+    .container
+        .row.justify-content-between.align-items-center
+            .col-md-4
+                a.logo-container(href="/")
+                    img.img-fluid(src="/img/logo.png" alt="Logo Beauty Smile")
+                    .clinica-nombre
+                        | Beauty Smile
+                        span Clínica Odontológica
+            .col-md-8
+                nav.navbar.navbar-expand-lg
+                    button.navbar-toggler(type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav")
+                        span.navbar-toggler-icon
+                    #navbarNav.collapse.navbar-collapse.justify-content-end
+                        ul.navbar-nav
+                            li.nav-item
+                                a.nav-link(href="/", class=pagina === 'Inicio' ? 'active' : '') Inicio
+                            li.nav-item
+                                a.nav-link(href="/servicios", class=pagina === 'Servicios' ? 'active' : '') Servicios
+                            li.nav-item
+                                a.nav-link(href="/testimoniales", class=pagina === 'Testimoniales' ? 'active' : '') Testimonios
+                            if usuario
+                                if usuario.rol === 'paciente'
+                                    li.nav-item
+                                        a.nav-link(href="/citas", class=pagina === 'Mis Citas' ? 'active' : '') Mis Citas
+                                if ['admin', 'dentista', 'asistente'].includes(usuario.rol)
+                                    li.nav-item
+                                        a.nav-link(href="/pacientes", class=pagina === 'Pacientes' ? 'active' : '') Pacientes
+                                li.nav-item.dropdown
+                                    a.nav-link.dropdown-toggle(href="#" role="button" data-bs-toggle="dropdown")
+                                        | #{usuario.nombre}
+                                    ul.dropdown-menu
+                                        li
+                                            a.dropdown-item(href="/perfil") Mi Perfil
+                                        li
+                                            a.dropdown-item(href="/logout") Cerrar Sesión
+                            else
+                                li.nav-item
+                                    a.nav-link(href="/login", class=pagina === 'Iniciar Sesión' ? 'active' : '') Iniciar Sesión
+                                li.nav-item
+                                    a.nav-link.btn(href="/registro", class=pagina === 'Registro' ? 'active' : '') Registrarse

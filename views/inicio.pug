@@ -1,0 +1,167 @@
+extends ./layout/index
+
+
+block contenido 
+    .hero.bg-primary.text-white.py-5.mb-5
+        .container
+            .row.align-items-center
+                .col-md-6
+                    h1.display-4 Bienvenido a Beauty Smile
+                    p.lead Cuidamos tu sonrisa con los mejores profesionales
+                    if usuario
+                        a.btn.btn-light.btn-lg(href="/citas") Agenda tu Cita
+                    else
+                        a.btn.btn-light.btn-lg(href="/login") Iniciar Sesión para Agendar
+                .col-md-6
+                    img.img-fluid.rounded.shadow(
+                        src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?w=800&auto=format&fit=crop&q=80",
+                        alt="Clínica Dental Beauty Smile"
+                    )
+
+    section.servicios-destacados.py-5.mb-5
+        .container
+            h2.text-center.mb-5 
+                i.fas.fa-tooth.me-2.text-primary
+                | Nuestros Servicios Destacados
+            .row.row-cols-1.row-cols-md-2.row-cols-lg-3.g-4
+                each servicio in servicios
+                    .col
+                        .card.h-100.shadow-sm.border-0.service-card
+                            img.card-img-top(src=servicio.imagen alt=servicio.nombre_servicio)
+                            .card-body
+                                h3.card-title.h5.mb-3
+                                    i(class=`fas ${servicio.icono} me-2 text-primary`)
+                                    = servicio.nombre_servicio
+                                p.card-text= servicio.descripcion
+                                .d-flex.justify-content-between.align-items-center.mt-3
+                                    .precio
+                                        span.text-muted Desde
+                                        .h4.mb-0.text-primary= `$${servicio.precio.toLocaleString()}`
+                                    a.btn.btn-outline-primary(href=`/servicios#${servicio.link}`) Ver más
+
+    section.por-que-elegirnos.bg-light.py-5.mb-5
+        .container.mt-5
+            h2.text-center.mb-4 ¿Por qué elegirnos?
+            .row.align-items-center
+                .col-md-6
+                    ul.list-unstyled
+                        li.mb-3
+                            i.fas.fa-check-circle.text-primary.me-2
+                            | Profesionales altamente calificados
+                        li.mb-3
+                            i.fas.fa-check-circle.text-primary.me-2
+                            | Tecnología de última generación
+                        li.mb-3
+                            i.fas.fa-check-circle.text-primary.me-2
+                            | Atención personalizada
+                        li.mb-3
+                            i.fas.fa-check-circle.text-primary.me-2
+                            | Instalaciones modernas y confortables
+                        li.mb-3
+                            i.fas.fa-check-circle.text-primary.me-2
+                            | Tratamientos garantizados
+                .col-md-6
+                    img.img-fluid.rounded.shadow(
+                        src="https://images.unsplash.com/photo-1629909615184-74f495363b67?w=800&auto=format&fit=crop&q=80",
+                        alt="Interior de Beauty Smile"
+                    )
+
+    section.nuestro-compromiso.py-5.mb-5
+        .container
+            .row
+                .col-12
+                    h2.text-center.mb-4 Nuestro Compromiso
+                    .card.border-0.bg-light
+                        .card-body
+                            .row.align-items-center
+                                .col-md-6
+                                    img.img-fluid.rounded.shadow(
+                                        src="https://images.unsplash.com/photo-1606265752439-1f18756aa5fc?w=800&auto=format&fit=crop&q=80",
+                                        alt="Equipo Beauty Smile"
+                                    )
+                                .col-md-6.ps-md-5.mt-4.mt-md-0
+                                    h3.text-primary Excelencia en Salud Dental
+                                    p.lead En Beauty Smile, nos dedicamos a brindar la mejor atención dental con un enfoque en la comodidad del paciente y resultados excepcionales.
+                                    a.btn.btn-primary.mt-3(href="/servicios") Conoce Nuestros Servicios
+
+    section.testimonios.bg-light.py-5.mb-5
+        .container
+            h2.text-center.mb-4 
+                i.fas.fa-quote-left.me-2.text-primary
+                | Lo que dicen nuestros pacientes
+                i.fas.fa-quote-right.ms-2.text-primary
+            
+            .row.row-cols-1.row-cols-md-2.row-cols-lg-3.g-4
+                if testimonios && testimonios.length
+                    each testimonio in testimonios
+                        .col
+                            .card.h-100.shadow-sm.border-0.testimonial-card
+                                .card-body
+                                    .testimonial-quote.mb-4
+                                        i.fas.fa-quote-left.text-primary.opacity-25.fa-2x
+                                    p.card-text.testimonial-content.mb-4= testimonio.contenido
+                                    .d-flex.align-items-center
+                                        .testimonial-avatar.me-3
+                                            i.fas.fa-user-circle.fa-2x.text-primary
+                                        .testimonial-info
+                                            h5.card-title.mb-1= `${testimonio.paciente.nombre} ${testimonio.paciente.apellido}`
+                                            small.text-muted
+                                                i.far.fa-calendar-alt.me-2
+                                                - const fecha = new Date(testimonio.fecha)
+                                                = fecha.toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })
+                else
+                    .col-12
+                        .alert.alert-info.text-center.shadow-sm
+                            i.fas.fa-info-circle.me-2
+                            | Aún no hay testimonios disponibles
+            
+            .text-center.mt-4
+                a.btn.btn-primary.btn-lg(href="/testimonios")
+                    i.fas.fa-comments.me-2
+                    | Ver todos los testimonios
+
+    section.informacion-adicional.py-5
+        .container
+            .row.mb-5
+                .col-md-6.mb-4.mb-md-0
+                    h2.mb-4 Nuestros Servicios
+                    ul.list-group
+                        li.list-group-item
+                            i.fas.fa-tooth.me-2
+                            | Limpieza Dental
+                        li.list-group-item
+                            i.fas.fa-teeth.me-2
+                            | Ortodoncia
+                        li.list-group-item
+                            i.fas.fa-tooth.me-2
+                            | Blanqueamiento
+                        li.list-group-item
+                            i.fas.fa-teeth-open.me-2
+                            | Extracciones
+                    a.btn.btn-primary.mt-3(href="/servicios") Ver todos los servicios
+                
+                .col-md-6
+                    h2.mb-4 Horario de Atención
+                    .card.shadow-sm
+                        .card-body
+                            p.mb-2
+                                i.fas.fa-calendar-day.me-2.text-primary
+                                strong Lunes a Viernes:
+                                |  8:00 AM - 7:00 PM
+                            p.mb-2
+                                i.fas.fa-calendar-day.me-2.text-primary
+                                strong Sábados:
+                                |  7:00 AM - 12:00 PM
+                            p.mb-0.text-danger
+                                i.fas.fa-calendar-times.me-2
+                                strong Domingos:
+                                |  No hay servicio
+                            
+                            .alert.alert-info.mt-3.mb-0
+                                i.fas.fa-info-circle.me-2
+                                | Las citas se agendan en horarios exactos (ejemplo: 8:00 AM, 9:00 AM, etc.)
+                            
+                            if usuario
+                                a.btn.btn-primary.mt-3(href="/citas") Agendar Cita
+                            else
+                                a.btn.btn-primary.mt-3(href="/login") Iniciar Sesión para Agendar

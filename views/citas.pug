@@ -1,0 +1,241 @@
+extends ./layout/index
+
+block contenido
+    .container.mt-5
+        h1.text-center.mb-5
+            i.fas.fa-calendar-plus.me-2.text-primary
+            | Agendar Cita
+
+        if error
+            .alert.alert-danger.text-center= error
+
+        .row.justify-content-center
+            .col-md-8
+                .card.shadow
+                    .card-body
+                        form(method="POST" action="/citas")
+                            .mb-4
+                                label.form-label.fw-bold(for="servicio_id")
+                                    i.fas.fa-tooth.me-2.text-primary
+                                    | Servicio
+                                select#servicio_id.form-select.form-select-lg(name="servicio_id" required)
+                                    option(value="") Selecciona un servicio
+                                    if servicios && servicios.length
+                                        each servicio in servicios
+                                            option(
+                                                value=servicio.servicio_id
+                                                selected=servicioSeleccionado && servicioSeleccionado.servicio_id === servicio.servicio_id
+                                            )= servicio.nombre_servicio
+
+                            .mb-4
+                                label.form-label.fw-bold(for="personal_id")
+                                    i.fas.fa-user-md.me-2.text-primary
+                                    | Odontólogo
+                                select#personal_id.form-select.form-select-lg(name="personal_id" required)
+                                    option(value="") Selecciona un odontólogo
+                                    if personal && personal.length
+                                        each persona in personal
+                                            option(value=persona.numero_identificacion)
+                                                | #{persona.nombre} #{persona.apellido}
+                                                if persona.especialidad
+                                                    |  - #{persona.especialidad}
+                                    else
+                                        option(value="" disabled) No hay odontólogos disponibles en este momento
+
+                            .mb-4
+                                label.form-label.fw-bold(for="fecha")
+                                    i.fas.fa-calendar.me-2.text-primary
+                                    | Fecha
+                                input#fecha.form-control.form-control-lg(
+                                    type="date"
+                                    name="fecha"
+                                    required
+                                )
+
+                            .mb-4
+                                label.form-label.fw-bold(for="hora")
+                                    i.fas.fa-clock.me-2.text-primary
+                                    | Hora
+                                select#hora.form-select.form-select-lg(name="hora" required)
+                                    option(value="") Selecciona una hora
+
+                            .d-grid.gap-2.mt-4
+                                button.btn.btn-primary.btn-lg(type="submit")
+                                    i.fas.fa-calendar-check.me-2
+                                    | Confirmar Cita
+
+        if citas && citas.length > 0
+            .row.mt-5
+                .col-12
+                    h3.text-center.mb-4
+                        i.fas.fa-calendar-week.me-2
+                        | Mis Citas Agendadas
+
+                    .table-responsive
+                        table.table.table-hover
+                            thead.table-primary
+                                tr
+                                    th Fecha y Hora
+                                    th= usuario.tipo === 'paciente' ? 'Odontólogo' : 'Paciente'
+                                    th Servicio
+                                    th Estado
+                                    th Acciones
+                            tbody
+                                each cita in citas
+                                    tr(class=cita.estado === 'cancelada' ? 'table-secondary' : '')
+                                        td
+                                            .fw-bold= new Date(cita.fecha_hora).toLocaleDateString()
+                                            .text-muted.small= new Date(cita.fecha_hora).toLocaleTimeString()
+                                        td
+                                            if usuario.tipo === 'paciente'
+                                                | #{cita.personal_cita.nombre} #{cita.personal_cita.apellido}
+                                                .text-muted.small= cita.personal_cita.especialidad
+                                            else
+                                                | #{cita.paciente_cita.nombre} #{cita.paciente_cita.apellido}
+                                                .text-muted.small= cita.paciente_cita.telefono
+                                        td= cita.servicio.nombre_servicio
+                                        td
+                                            span(class=`badge bg-${cita.estado === 'pendiente' ? 'primary' : 'secondary'}`)= cita.estado
+                                        td
+                                            if cita.estado === 'pendiente'
+                                                button.btn.btn-danger.btn-sm.cancelar-cita(
+                                                    data-cita-id=cita.cita_id
+                                                    type="button"
+                                                )
+                                                    i.fas.fa-times.me-1
+                                                    | Cancelar
+
+block scripts
+    script.
+        document.addEventListener('DOMContentLoaded', function() {
+            // Referencias a elementos del DOM
+            const servicioSelect = document.getElementById('servicio_id');
+            const personalSelect = document.getElementById('personal_id');
+            const fechaInput = document.getElementById('fecha');
+            const horaSelect = document.getElementById('hora');
+            const form = document.querySelector('form');
+
+            // Función para generar horas disponibles según el día
+            function generarHorasDisponibles(fecha) {
+                horaSelect.innerHTML = '<option value="">Selecciona una hora</option>';
+                
+                if (!fecha) return;
+                
+                const dia = new Date(fecha).getDay();
+                let horaInicio, horaFin;
+                
+                // Domingo = 0, Sábado = 6
+                if (dia === 0) {
+                    // Domingo no hay servicio
+                    horaSelect.innerHTML = '<option value="">No hay servicio los domingos</option>';
+                    horaSelect.disabled = true;
+                    return;
+                } else if (dia === 6) {
+                    // Sábado: 7 AM a 12 PM
+                    horaInicio = 7;
+                    horaFin = 12;
+                } else {
+                    // Lunes a Viernes: 8 AM a 7 PM
+                    horaInicio = 8;
+                    horaFin = 19;
+                }
+
+                for (let hora = horaInicio; hora <= horaFin; hora++) {
+                    const horaFormateada = hora.toString().padStart(2, '0') + ':00';
+                    const option = document.createElement('option');
+                    option.value = horaFormateada;
+                    option.textContent = horaFormateada;
+                    horaSelect.appendChild(option);
+                }
+                
+                horaSelect.disabled = false;
+            }
+
+            // Establecer fecha mínima como hoy
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            fechaInput.min = today.toISOString().split('T')[0];
+
+            // --- ELIMINADO: handleSelectClick y sus listeners ---
+
+            // Manejar cambios en el selector de servicio
+            servicioSelect.addEventListener('change', function() {
+                console.log('Servicio seleccionado:', this.value);
+            });
+
+            // Manejar cambios en el selector de personal
+            personalSelect.addEventListener('change', function() {
+                console.log('Personal seleccionado:', this.value);
+            });
+
+            // Manejar cambios en la fecha
+            fechaInput.addEventListener('change', function() {
+                const fechaSeleccionada = new Date(this.value);
+                if (fechaSeleccionada < today) {
+                    alert('No puedes seleccionar una fecha pasada');
+                    this.value = '';
+                    horaSelect.innerHTML = '<option value="">Selecciona una hora</option>';
+                    horaSelect.disabled = true;
+                } else {
+                    generarHorasDisponibles(this.value);
+                }
+            });
+
+            // Manejar envío del formulario
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                if (!servicioSelect.value || !personalSelect.value || !fechaInput.value || !horaSelect.value) {
+                    alert('Por favor, completa todos los campos');
+                    return;
+                }
+
+                const fechaSeleccionada = new Date(fechaInput.value);
+                if (fechaSeleccionada < today) {
+                    alert('No puedes seleccionar una fecha pasada');
+                    return;
+                }
+
+                this.submit();
+            });
+
+            // Opcional: estilos visuales para los selectores
+            [servicioSelect, personalSelect, horaSelect].forEach(select => {
+                select.style.cursor = 'pointer';
+                select.style.pointerEvents = 'auto';
+                select.classList.add('cursor-pointer');
+                
+                select.addEventListener('mouseover', function() {
+                    this.style.backgroundColor = '#f8f9fa';
+                });
+                
+                select.addEventListener('mouseout', function() {
+                    this.style.backgroundColor = '';
+                });
+            });
+
+            // Manejar cancelación de citas
+            document.querySelectorAll('.cancelar-cita').forEach(button => {
+                button.addEventListener('click', async function() {
+                    if (confirm('¿Estás seguro de que deseas cancelar esta cita?')) {
+                        const citaId = this.dataset.citaId;
+                        try {
+                            const response = await fetch(`/citas/${citaId}`, {
+                                method: 'DELETE'
+                            });
+                            const data = await response.json();
+                            if (response.ok) {
+                                alert(data.mensaje);
+                                location.reload();
+                            } else {
+                                alert(data.mensaje || 'Error al cancelar la cita');
+                            }
+                        } catch (error) {
+                            console.error('Error:', error);
+                            alert('Error al cancelar la cita');
+                        }
+                    }
+                });
+            });
+        });
+ 

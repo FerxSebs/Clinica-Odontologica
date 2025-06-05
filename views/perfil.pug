@@ -1,0 +1,110 @@
+extends ./layout/index
+
+block contenido
+    .container.mt-5
+        if error
+            .alert.alert-danger.text-center= error
+
+        .row
+            .col-md-4.mb-4
+                .card.shadow
+                    .card-body
+                        h3.card-title.text-center.mb-4
+                            i.fas.fa-user-circle.me-2
+                            | Información Personal
+                        
+                        .mb-3
+                            label.text-muted Nombre
+                            p.h5 #{usuario.nombre} #{usuario.apellido}
+                        
+                        .mb-3
+                            label.text-muted Identificación
+                            p.h5 #{usuario.numero_identificacion}
+                        
+                        if usuario.tipo === 'personal'
+                            .mb-3
+                                label.text-muted Especialidad
+                                p.h5 #{usuario.especialidad}
+                        
+                        .mb-3
+                            label.text-muted Tipo de Usuario
+                            p.h5.text-capitalize #{usuario.tipo}
+
+            .col-md-8
+                .card.shadow
+                    .card-body
+                        h3.card-title.text-center.mb-4
+                            i.fas.fa-calendar-check.me-2
+                            | Mis Citas
+
+                        if citas && citas.length > 0
+                            .table-responsive
+                                table.table.table-hover.align-middle
+                                    thead.table-primary
+                                        tr
+                                            th Fecha y Hora
+                                            th= usuario.tipo === 'paciente' ? 'Odontólogo' : 'Paciente'
+                                            th Servicio
+                                            th Estado
+                                            th Acciones
+                                    tbody
+                                        each cita in citas
+                                            tr(class=cita.estado === 'cancelada' ? 'table-secondary' : '')
+                                                td
+                                                    .fw-bold= new Date(cita.fecha_hora).toLocaleDateString()
+                                                    .text-muted.small= new Date(cita.fecha_hora).toLocaleTimeString()
+                                                td
+                                                    if usuario.tipo === 'paciente'
+                                                        | #{cita.personal_cita.nombre} #{cita.personal_cita.apellido}
+                                                        .text-muted.small= cita.personal_cita.especialidad
+                                                    else
+                                                        | #{cita.paciente_cita.nombre} #{cita.paciente_cita.apellido}
+                                                        .text-muted.small= cita.paciente_cita.telefono
+                                                td
+                                                    | #{cita.servicio.nombre_servicio}
+                                                    .text-muted.small
+                                                        | $#{cita.servicio.precio.toLocaleString()}
+                                                        |  - #{cita.servicio.duracion_minutos} min
+                                                td
+                                                    span(class=`badge bg-${cita.estado === 'pendiente' ? 'primary' : cita.estado === 'confirmada' ? 'success' : 'secondary'}`)= cita.estado
+                                                td
+                                                    if cita.estado === 'pendiente'
+                                                        button.btn.btn-danger.btn-sm.cancelar-cita(
+                                                            data-cita-id=cita.cita_id
+                                                            type="button"
+                                                        )
+                                                            i.fas.fa-times.me-1
+                                                            | Cancelar
+                        else
+                            .text-center.py-5
+                                i.fas.fa-calendar-times.fa-3x.text-muted.mb-3
+                                p.lead.text-muted No tienes citas agendadas actualmente.
+                                a.btn.btn-primary.mt-3(href="/citas")
+                                    i.fas.fa-calendar-plus.me-2
+                                    | Agendar Nueva Cita
+
+block scripts
+    script.
+        // Manejar cancelación de citas
+        document.querySelectorAll('.cancelar-cita').forEach(button => {
+            button.addEventListener('click', async function() {
+                if (confirm('¿Estás seguro de que deseas cancelar esta cita?')) {
+                    const citaId = this.dataset.citaId;
+                    try {
+                        const response = await fetch(`/citas/${citaId}`, {
+                            method: 'DELETE'
+                        });
+                        const data = await response.json();
+                        if (response.ok) {
+                            alert(data.mensaje);
+                            location.reload();
+                        } else {
+                            alert(data.mensaje || 'Error al cancelar la cita');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Error al cancelar la cita');
+                    }
+                }
+            });
+        }); 

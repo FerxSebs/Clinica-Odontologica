@@ -1,0 +1,16 @@
+footer.container.py-5
+    .row
+        .col-md-6
+            nav.nav.footer.justify-content-center.justify-content-md-start
+                a.nav-link(href="/") Inicio
+                a.nav-link(href="/servicios") Servicios
+                a.nav-link(href="/testimoniales") Testimonios
+                if user
+                    if user.rol === 'paciente'
+                        a.nav-link(href="/citas") Mis Citas
+                    if ['admin', 'dentista', 'asistente'].includes(user.rol)
+                        a.nav-link(href="/pacientes") Pacientes
+        .col-md-6
+            p.copyright.text-center.text-md-right
+                | Beauty Smile - Todos los Derechos Reservados  ©
+                span= year

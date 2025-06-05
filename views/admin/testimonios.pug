@@ -1,0 +1,28 @@
+extends ../layout/admin
+
+block contenido
+    .container.mt-5
+        h2.text-center.mb-5 Administración de Testimonios
+
+        if error
+            .alert.alert-danger.text-center= error
+
+        .table-responsive
+            table.table.table-striped
+                thead.table-dark
+                    tr
+                        th Paciente
+                        th Email
+                        th Fecha
+                        th Comentario
+                tbody
+                    if testimonios && testimonios.length
+                        each testimonio in testimonios
+                            tr
+                                td= `${testimonio.Paciente.nombre} ${testimonio.Paciente.apellido}`
+                                td= testimonio.Paciente.email
+                                td= new Date(testimonio.fecha).toLocaleDateString()
+                                td= testimonio.comentario
+                    else
+                        tr
+                            td(colspan="4").text-center No hay testimonios registrados 
